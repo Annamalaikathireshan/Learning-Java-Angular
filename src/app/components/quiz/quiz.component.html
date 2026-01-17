@@ -1,0 +1,64 @@
+<div class="quiz-container animate-fade-in">
+    <div class="quiz-card glass" *ngIf="!quizCompleted()">
+        <header class="quiz-header">
+            <div class="category-badge">{{ currentQuestion().category }}</div>
+            <div class="progress-container">
+                <label>Question {{ currentIndex() + 1 }} of {{ questions().length }}</label>
+                <div class="progress-bar">
+                    <div class="progress-fill" [style.width.%]="progress()"></div>
+                </div>
+            </div>
+        </header>
+
+        <main class="question-section">
+            <h2 class="question-text">{{ currentQuestion().text }}</h2>
+
+            <div class="options-grid">
+                <button *ngFor="let option of currentQuestion().options; let i = index" class="option-btn glass"
+                    [class.selected]="selectedAnswer() === i"
+                    [class.correct]="showFeedback() && i === currentQuestion().correctAnswer"
+                    [class.wrong]="showFeedback() && selectedAnswer() === i && i !== currentQuestion().correctAnswer"
+                    [disabled]="showFeedback()" (click)="selectOption(i)">
+                    <span class="option-letter">{{ ['A', 'B', 'C', 'D'][i] }}</span>
+                    <span class="option-content">{{ option }}</span>
+                    <span class="status-icon" *ngIf="showFeedback() && i === currentQuestion().correctAnswer">✅</span>
+                    <span class="status-icon"
+                        *ngIf="showFeedback() && selectedAnswer() === i && i !== currentQuestion().correctAnswer">❌</span>
+                </button>
+            </div>
+        </main>
+
+        <footer class="quiz-footer">
+            <div class="explanation-box glass" *ngIf="showFeedback()">
+                <p><strong>Explanation:</strong> {{ currentQuestion().explanation }}</p>
+            </div>
+
+            <div class="actions">
+                <button *ngIf="!showFeedback()" class="primary-btn" [disabled]="selectedAnswer() === null"
+                    (click)="submitAnswer()">
+                    Submit Answer
+                </button>
+                <button *ngIf="showFeedback()" class="primary-btn pulse-anim" (click)='nextQuestion()'>
+                    {{ currentIndex() === questions().length - 1 ? 'Finish Quiz' : 'Next Question' }}
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <div class="result-card glass animate-fade-in" *ngIf="quizCompleted()">
+        <div class="result-icon">🏆</div>
+        <h2>Quiz Completed!</h2>
+        <div class="score-display">
+            <span class="score-number">{{ score() }}</span>
+            <span class="score-total">/ {{ questions().length }}</span>
+        </div>
+        <p class="result-message">
+            {{ score() === questions().length ? "Perfect score! You're an Angular master." : "Great effort! Keep
+            learning with the AI Tutor." }}
+        </p>
+        <div class="result-actions">
+            <button class="primary-btn" (click)="restartQuiz()">Try Again</button>
+            <!-- We will add navigation to learning later -->
+        </div>
+    </div>
+</div>

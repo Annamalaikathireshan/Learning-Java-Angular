@@ -1,0 +1,97 @@
+<div class="tutor-container animate-fade-in">
+    <!-- Sidebar -->
+    <aside class="sidebar glass">
+        <div class="sidebar-tabs">
+            <button [class.active]="mode() === 'chat'" (click)="mode.set('chat')">Modules</button>
+            <button [class.active]="mode() === 'coding'" (click)="mode.set('coding')">Challenges</button>
+        </div>
+
+        <div class="sidebar-content">
+            <!-- Learning Modules -->
+            <div *ngIf="mode() === 'chat'" class="phases-list">
+                <div *ngFor="let phase of phases()" class="phase-group">
+                    <h3>{{ phase.name }}</h3>
+                    <div *ngFor="let module of phase.modules" class="module-card glass"
+                        [class.active]="currentModule()?.id === module.id" [class.locked]="module.status === 'locked'"
+                        [class.completed]="module.status === 'completed'" (click)="selectModule(module)">
+                        <div class="status-indicator">
+                            <span *ngIf="module.status === 'completed'">✅</span>
+                            <span *ngIf="module.status === 'locked'">🔒</span>
+                            <span *ngIf="module.status === 'available'" class="available-dot"></span>
+                        </div>
+                        <div class="module-info">
+                            <h4>{{ module.name }}</h4>
+                            <p>{{ module.description }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coding Challenges -->
+            <div *ngIf="mode() === 'coding'" class="challenges-list">
+                <div *ngFor="let challenge of challenges()" class="challenge-item glass"
+                    [class.active]="currentChallenge()?.id === challenge.id" (click)="selectChallenge(challenge)">
+                    <div class="challenge-type">{{ challenge.difficulty }}</div>
+                    <h4>{{ challenge.title }}</h4>
+                    <p>{{ challenge.points }} XP</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="user-status glass">
+                <div class="status-dot"></div>
+                <span>Syncing Cloud...</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Chat Area -->
+    <main class="chat-area" *ngIf="!currentChallenge()">
+        <header class="chat-header glass">
+            <div class="header-info">
+                <h2>Interactive Tutoring</h2>
+                <p *ngIf="currentModule()">Current: {{ currentModule()?.name }}</p>
+                <p *ngIf="!currentModule()">Select a module to begin your journey</p>
+            </div>
+            <div class="header-actions">
+                <span *ngIf="currentModule()?.status === 'completed'" class="done-badge">COMPLETED ✅</span>
+                <button class="btn-icon glass"><span>⚙️</span></button>
+            </div>
+        </header>
+
+        <div class="messages-container" #scrollMe>
+            <div *ngFor="let msg of messages()" class="message-wrapper" [class.user]="msg.role === 'user'"
+                [class.assistant]="msg.role === 'assistant'">
+                <div class="avatar" [class.assistant-avatar]="msg.role === 'assistant'">
+                    {{ msg.role === 'assistant' ? '🤖' : '👨‍💻' }}
+                </div>
+                <div class="message-content glass">
+                    <div class="message-text" [innerHTML]="msg.content"></div>
+                    <div class="message-meta">{{ msg.timestamp | date:'shortTime' }}</div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="input-area glass">
+            <div class="input-wrapper">
+                <input type="text" [(ngModel)]="userInput" (keyup.enter)="sendMessage()"
+                    placeholder="Type your question here..." class="chat-input">
+                <button (click)="sendMessage()" class="send-btn" [disabled]="!userInput().trim()">
+                    <span class="send-icon">🚀</span>
+                </button>
+            </div>
+        </footer>
+    </main>
+
+    <!-- Coding Playground Area -->
+    <main class="playground-area" *ngIf="currentChallenge()">
+        <div class="playground-layout">
+            <app-code-playground [challenge]="currentChallenge()!"
+                (completed)="onChallengeComplete($event)"></app-code-playground>
+        </div>
+    </main>
+
+    <!-- Real-time Notifications -->
+    <app-notification></app-notification>
+</div>
