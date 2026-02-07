@@ -1,0 +1,283 @@
+@use "sass:math";
+@use "sass:list";
+
+.valentine-container {
+    min-height: 100vh;
+    width: 100%;
+    background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+    font-family: 'Outfit', 'Inter', sans-serif;
+}
+
+.background-hearts {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+
+    .heart {
+        position: absolute;
+        bottom: -100px;
+        width: 20px;
+        height: 20px;
+        background: rgba(255, 255, 255, 0.3);
+        clip-path: polygon(50% 15%, 70% 0, 100% 20%, 100% 50%, 50% 90%, 0 50%, 0 20%, 30% 0);
+        animation: float var(--speed) linear infinite;
+        left: var(--left);
+        opacity: var(--opacity);
+
+        // Dynamically set properties via @for loop for better variety
+        @for $i from 1 through 20 {
+            &:nth-child(#{$i}) {
+                --left: calc(#{math.random(100)} * 1%);
+                --speed: calc(#{math.random(10) + 10} * 1s);
+                --opacity: #{math.div(math.random(4), 10) + 0.2};
+                animation-delay: calc(#{math.random(10)} * 1s);
+            }
+        }
+    }
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: var(--opacity);
+    }
+
+    90% {
+        opacity: var(--opacity);
+    }
+
+    100% {
+        transform: translateY(-110vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+.quest-card {
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(15px);
+    padding: 3rem;
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: white;
+
+    h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+        @media (max-width: 600px) {
+            font-size: 1.8rem;
+        }
+    }
+
+    p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+
+        @media (max-width: 600px) {
+            font-size: 1rem;
+        }
+    }
+
+    @media (max-width: 600px) {
+        padding: 2rem 1.5rem;
+        min-height: 350px;
+    }
+}
+
+.step {
+    height: 100%;
+}
+
+.btn {
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    border: none;
+    font-weight: bold;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+
+    &:hover {
+        transform: scale(1.05) translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    &-primary {
+        background: white;
+        color: #ff758c;
+    }
+
+    &-yes {
+        background: #ff4757;
+        color: white;
+        margin: 10px;
+    }
+
+    &-no {
+        background: #747d8c;
+        color: white;
+        margin: 10px;
+        z-index: 100;
+        position: relative;
+        user-select: none;
+
+        &.moving {
+            position: fixed;
+            transition: none; // Disable transition when moving to be snappy
+            margin: 0; // Remove margin when fixed
+        }
+    }
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 2rem;
+    position: relative;
+    z-index: 10;
+}
+
+.heart-icon {
+    font-size: 5rem;
+    margin-bottom: 1rem;
+
+    &.bouncing {
+        animation: bounce 1.5s infinite;
+    }
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+.reasons-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 2rem;
+
+    .reason-card {
+        background: rgba(255, 255, 255, 0.15);
+        padding: 1rem;
+        border-radius: 15px;
+        text-align: left;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1rem;
+    }
+}
+
+.ring-box {
+    font-size: 6rem;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.glow-text {
+    animation: glow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #ff00de;
+    }
+
+    to {
+        text-shadow: 0 0 20px #fff, 0 0 30px #ff4da6, 0 0 40px #ff4da6;
+    }
+}
+
+.heart-explosion {
+    font-size: 3rem;
+    margin-top: 1rem;
+}
+
+// Confetti styles
+.confetti-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+
+    .confetti {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: #ffd700;
+        top: -10px;
+        left: var(--left);
+        opacity: 0;
+        animation: rain 3s linear infinite;
+
+        @for $i from 1 through 20 {
+            &:nth-child(#{$i}) {
+                --left: calc(#{math.random(100)} * 1%);
+                background: list.nth((#ff4757, #ffd700, #ffffff, #ff7eb3), math.random(4));
+                animation-delay: calc(#{math.div(math.random(30), 10)} * 1s);
+            }
+        }
+    }
+}
+
+@keyframes rain {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(110vh) rotate(720deg);
+        opacity: 0;
+    }
+}

@@ -1,0 +1,71 @@
+<div class="valentine-container">
+    <!-- Interactive Background -->
+    <div class="background-hearts">
+        <div *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]" class="heart" [style.--i]="i"></div>
+    </div>
+
+    <main class="quest-card">
+        @if (currentStep === 0) {
+        <div class="step intro" @fadeInOut>
+            <div class="heart-icon bouncing">❤️</div>
+            <h1>Welcome to the Love Quest</h1>
+            <p>A journey designed just for you.</p>
+            <button class="btn btn-primary" (click)="nextStep()">Start the Quest</button>
+        </div>
+        }
+
+        @if (currentStep === 1) {
+        <div class="step choice" @fadeInOut>
+            <h1>Will you be my Valentine?</h1>
+            <div class="button-group">
+                <button class="btn btn-yes" [style.transform]="'scale(' + yesButtonScale + ')'" (click)="nextStep()">
+                    YES!
+                </button>
+
+                <button class="btn btn-no" [class.moving]="isNoButtonMoving"
+                    [style.left.px]="isNoButtonMoving ? noButtonPosition.x : null"
+                    [style.top.px]="isNoButtonMoving ? noButtonPosition.y : null" (mouseover)="moveNoButton()">
+                    No
+                </button>
+            </div>
+        </div>
+        }
+
+        @if (currentStep === 2) {
+        <div class="step journey" @fadeInOut>
+            <h1>Our Story</h1>
+            <div class="reasons-list" @staggerList>
+                @for (reason of reasons; track $index) {
+                <div class="reason-card">
+                    <span class="heart-bullet">💖</span>
+                    {{ reason }}
+                </div>
+                }
+            </div>
+            <button class="btn btn-primary mt-4" (click)="nextStep()">Continue...</button>
+        </div>
+        }
+
+        @if (currentStep === 3) {
+        <div class="step proposal" @fadeInOut>
+            <div class="proposal-visual">
+                <div class="ring-box">💍</div>
+            </div>
+            <h2>I have a question...</h2>
+            <h1>Will you stay by my side forever?</h1>
+            <button class="btn btn-primary big-btn" (click)="nextStep()">YES, FOREVER!</button>
+        </div>
+        }
+
+        @if (currentStep === 4) {
+        <div class="step success" @fadeInOut>
+            <div class="confetti-container">
+                <div *ngFor="let p of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]" class="confetti" [style.--i]="p"></div>
+            </div>
+            <h1 class="glow-text">YAAAY! ❤️</h1>
+            <p class="final-msg">I love you more than words can say.</p>
+            <div class="heart-explosion">❤️❤️❤️</div>
+        </div>
+        }
+    </main>
+</div>
